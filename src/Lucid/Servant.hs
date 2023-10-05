@@ -19,7 +19,7 @@ import           Data.Semigroup
                  ((<>))
 import qualified Data.Text           as T
 import           Lucid
-                 (Attribute)
+                 (Attributes)
 import           Lucid.Html5
                  (href_)
 import           Servant.API
@@ -27,62 +27,62 @@ import           Servant.API
 import           Servant.Links
                  (HasLink, IsElem, Link, MkLink, safeLink')
 
--- | 'safeLink' variant which creates lucid's 'Attribute' given base url.
+-- | 'safeLink' variant which creates lucid's 'Attributes' given base url.
 --
 -- >>> type API = "path" :> Get '[JSON] Int
 -- >>> let api = Proxy :: Proxy API
 --
 -- >>> safeHref_ "" api api
--- Attribute "href" "path"
+-- Attributes "href" "path"
 --
 -- >>> safeHref_ "/" api api
--- Attribute "href" "/path"
+-- Attributes "href" "/path"
 --
 -- >>> safeHref_ "http://example.com" api api
--- Attribute "href" "http://example.com/path"
+-- Attributes "href" "http://example.com/path"
 --
 -- >>> safeHref_ "http://example.com/" api api
--- Attribute "href" "http://example.com/path"
+-- Attributes "href" "http://example.com/path"
 --
 safeHref_
     :: (IsElem endpoint api, HasLink endpoint)
     => T.Text
-    -> Proxy api -> Proxy endpoint -> MkLink endpoint Attribute
+    -> Proxy api -> Proxy endpoint -> MkLink endpoint Attributes
 safeHref_ = safeLink' . linkHref_
 
 -- | @'safeLink' "/"@
 safeAbsHref_
     :: (IsElem endpoint api, HasLink endpoint)
-    => Proxy api -> Proxy endpoint -> MkLink endpoint Attribute
+    => Proxy api -> Proxy endpoint -> MkLink endpoint Attributes
 safeAbsHref_ = safeLink' linkAbsHref_
 
 -- | @'safeLink' ""@
 safeRelHref_
     :: (IsElem endpoint api, HasLink endpoint)
-    => Proxy api -> Proxy endpoint -> MkLink endpoint Attribute
+    => Proxy api -> Proxy endpoint -> MkLink endpoint Attributes
 safeRelHref_ = safeLink' linkRelHref_
 
--- | Create an `href` attribute from a 'Link', with given base url.
+-- | Create an `href` Attributes from a 'Link', with given base url.
 --
 -- "servant" ensures that any 'Link' is valid within an API.
 -- This function ensures it is possible to navigate to that endpoint from
 -- a page which shares a root with that API.
-linkHref_ :: T.Text -> Link -> Attribute
+linkHref_ :: T.Text -> Link -> Attributes
 linkHref_ burl = href_ . (burl <+>) . toUrlPiece
 
--- | Create an `href` attribute from a 'Link', with leading '/'.
+-- | Create an `href` Attributes from a 'Link', with leading '/'.
 --
 -- "servant" ensures that any 'Link' is valid within an API.
 -- This function ensures it is possible to navigate to that endpoint from
 -- a page which shares a root with that API.
-linkAbsHref_ :: Link -> Attribute
+linkAbsHref_ :: Link -> Attributes
 linkAbsHref_ = linkHref_ "/"
 
--- | Create an `href` attribute from a 'Link', as a relative link.
+-- | Create an `href` Attributes from a 'Link', as a relative link.
 --
 -- "servant" ensures that any 'Link' is valid within an API.
 -- Use this function if a relative link (no leading '/') is required.
-linkRelHref_ :: Link -> Attribute
+linkRelHref_ :: Link -> Attributes
 linkRelHref_ = href_ . toUrlPiece
 
 (<+>) :: T.Text -> T.Text -> T.Text
