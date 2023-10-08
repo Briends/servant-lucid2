@@ -51,7 +51,7 @@ test-suite example
   build-depends:
       base
     , lucid2
-    , servant-lucid
+    , servant-lucid2
     , servant-server >=0.14     && <0.21
     , wai            >=3.0.3.0  && <3.3
     , warp           >=3.0.13.1 && <3.4
